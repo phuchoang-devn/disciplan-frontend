@@ -1,0 +1,92 @@
+.login-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url(static/moren-hsu-VLaKsTkmVhk-unsplash.jpg);
+    background-size: contain;
+}
+
+.login-nav {
+    width: 100vw;
+    height: 10vh;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-image: linear-gradient(var(--secondary-color), var(--main-color) 70%);
+
+    font-size: 40px;
+    font-family: logo-font;
+    color: white;
+    box-shadow: 0 5px 10px 2px black;
+}
+
+.login-error {
+    min-height: 30px;
+    margin-top: auto;
+    margin-bottom: 5px;
+    color: rgb(255, 4, 4);
+    text-shadow: black 0 0 5px;
+    font-size: large;
+    text-align: center;
+}
+
+.login-form-container {
+    flex: 1;
+    display: grid;
+    place-content: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 25vw;
+    min-width: 500px;
+    border: none;
+    border-radius: 10px;
+    padding-top: 5%;
+    background-color: hwb(0 0% 100% / 0.606);
+    box-shadow: 0 0 5px 5px var(--secondary-color);
+}
+
+.login-form > input {
+    width: 75%;
+    margin: 2%;
+    height: 50px;
+    border: 1px;
+    padding-left: 5%;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+}
+
+.login-form > input::placeholder {
+    padding-left: 1%;
+    color: white;
+    opacity: 80%;
+}
+
+.login-form > button {
+    background-color: var(--main-color);
+    color: white;
+    font-size: medium;
+    width: 80%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    margin: 5%;
+    box-shadow: 0 0 3px 1px black;
+    cursor: pointer;
+}
+
+.login-form > button:hover {
+    opacity: 80%;
+}
+
+.login-form > button:active {
+    background-color: var(--secondary-color);
+    box-shadow: none;
+}

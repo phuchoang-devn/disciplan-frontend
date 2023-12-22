@@ -1,0 +1,86 @@
+.task-info-container {
+    height: 100vh;
+    width: 100vw;
+
+    position: absolute;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.task-info {
+    height: 50vh;
+    min-height: 300px;
+    aspect-ratio: 3 / 2;
+    background-color: rgb(225, 225, 225);
+    border: 2px groove rgb(78, 78, 78);
+    border-radius: 10px;
+    box-sizing: border-box;
+    padding: 2%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.task-info__header {
+    display: flex;
+}
+
+.task-info__meta {
+    flex-grow: 1;
+}
+
+.task-info__name {
+    font-size: 35px;
+    font-family: arvo-bold;
+}
+
+.task-info__desc {
+    max-width: 80%;
+    margin-top: 10px;
+    border: 1px solid rgb(79, 79, 79);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.task-info__option {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    height: 200px;
+}
+
+.task-info__option > * {
+    font-size: 32px;
+}
+
+.task-info__tag-container {
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.task-info__tag {
+    padding: 5px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 2px solid rgb(80, 80, 80);
+    width: fit-content;
+}
+
+.task-info__status {
+    height: 30px;
+    padding-right: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+    text-align: right;
+
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+
