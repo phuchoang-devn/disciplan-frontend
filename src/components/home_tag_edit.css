@@ -1,0 +1,119 @@
+.tag-edit-container {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    z-index: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tag-edit {
+    height: fit-content;
+    max-height: 95vh;
+    background-color: rgb(234, 234, 234);
+    border: 2px groove rgb(78, 78, 78);
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 2%;
+
+    display: flex;
+
+    overflow: auto;
+}
+
+.tag-edit__start {
+    display: flex;
+    align-items: center;
+}
+
+.tag-edit__start-icon {
+    font-size: 40px;
+    margin-right: 10px;
+}
+
+.tag-edit__name-container::first-letter {
+    text-transform: capitalize;
+}
+
+.tag-edit__name-container {
+    flex-grow: 1;
+    display: flex;
+}
+
+.tag-edit__name {
+    flex-grow: 1;
+    height: 50px;
+    margin-right: unset;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.tag-edit__color {
+    display: flex;
+    align-items: center;
+}
+
+.tag-edit__color-input {
+    height: 50px;
+    background-color: transparent;
+    border: unset;
+    padding: unset;
+    flex-grow: 1;
+    font-size: 100px;
+}
+
+.tag-edit__color-reset {
+    background-color: #4b4b4b;
+    border-radius: 5px;
+    color: rgb(224, 224, 224);
+    padding: 2px;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+}
+
+.tag-edit__option {
+    display: flex;
+    flex-direction: column;
+    margin-left: 3rem;
+}
+
+.tag-edit__option > * {
+    font-size: 32px;
+    border-radius: 5px;
+    height: 50px;
+    width: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tag-edit-error {
+    height: fit-content;
+    width: 20%;
+    min-width: fit-content;
+
+    padding: 1em;
+    border-radius: 5px;
+    box-shadow: 0 -2px 20px 1px rgba(0, 0, 0, 0.499);
+
+    position: absolute;
+    bottom: 0;
+
+    color: white;
+    font-size: 1.25rem;
+    background-color: var(--error-color);
+
+    display: flex;
+    justify-content: center;
+}
+
+.tag-edit-warning-icon {
+    display: flex;
+    align-items: center;
+    font-size: 1.25em;
+    margin-right: 5px;
+}

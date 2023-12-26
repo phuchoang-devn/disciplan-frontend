@@ -1,25 +1,46 @@
 import "./home_task_info.css"
 import { TaskContext } from "../home.js";
+import deleteTask from "../crud/delete_task.js"
+import UpdateForGroupWindow from "./update_group_window.js"
 
 import { MdModeEditOutline } from "react-icons/md";
 import { FaXmark } from "react-icons/fa6";
 import { IoTrashBinSharp } from "react-icons/io5";
-import { PiBellSimpleFill } from "react-icons/pi";
-import { useContext, memo, useEffect } from "react";
+import { useContext, memo, useState } from "react";
 
 import moment from 'moment';
 
 
 const TaskInfo = (props) => {
     const { id } = props
-    const [ tasks, repetitions, setTaskInfo, setTaskEdit ] = useContext(TaskContext);
+    const [tasks, repetitions, setTaskInfo, setTaskEdit, loading, setLoading, datePointer] = useContext(TaskContext);
+    const [updateTypeWindow, setUpdateTypeWindow] = useState(false);
+    const [updateType, setUpdateType] = useState(undefined);
 
-    let foundTask = tasks.current.filter(task => task.id === id)[0];
-    let foundRepe = (foundTask.repetition_group) ? repetitions.current.filter(repe => repe.id === foundTask.repetition_group)[0] : undefined;
+    const foundTask = tasks.current.filter(task => task.id === id)[0];
+    const foundRepe = (foundTask.repetition_group) ? repetitions.current.filter(repe => repe.id === foundTask.repetition_group)[0] : undefined;
+
+    const handleDelete = () => {
+        if (!!foundRepe && !updateType) {
+            setUpdateTypeWindow(true);
+            return
+        }
+        deleteTask(foundTask, updateType, tasks, repetitions, loading, setLoading, datePointer);
+        setTaskInfo(NaN);
+    }
 
     return (
-        <div className="task-info-container" onClick={() => setTaskInfo(NaN)} style={{background: "radial-gradient(#000000BF, "+foundTask.color+"BF)"}} >
-            <div className="task-info" onClick={(e) => { e.stopPropagation() }} >
+        <div className="task-info-container" onMouseDown={() => setTaskInfo(NaN)} style={{ background: "radial-gradient(#000000BF, " + foundTask.color + "BF)" }} >
+            {
+                updateTypeWindow ?
+                    <UpdateForGroupWindow
+                        setUpdateTypeWindow={setUpdateTypeWindow}
+                        updateType={updateType}
+                        setUpdateType={setUpdateType}
+                        handleSubmit={handleDelete} />
+                    : null
+            }
+            <div className="task-info" onMouseDown={(e) => { e.stopPropagation() }} >
                 <div className="task-info__header">
                     <div className="task-info__meta">
                         <div className="task-info__name">{foundTask.name}</div>
@@ -54,8 +75,7 @@ const TaskInfo = (props) => {
                                 repe: foundRepe
                             });
                         }}><MdModeEditOutline /></div>
-                        <div><IoTrashBinSharp /></div>
-                        <div><PiBellSimpleFill /></div>
+                        <div onClick={() => handleDelete()}><IoTrashBinSharp /></div>
                     </div>
                 </div>
                 <div className="task-info-footer">
@@ -72,11 +92,20 @@ const TaskInfo = (props) => {
                                 : null
                         }
                     </div>
-                    <div className="task-info__status"
-                        style={{
-                            backgroundImage: "linear-gradient(to right, var(--main-color) " + foundTask.status + "%, var(--secondary-50-opacity) " + (100 - foundTask.status) + "%)"
-                        }}
-                    ><b>{foundTask.status}%</b></div>
+                    <div className="task-info__status-bar">
+                        <div className="task-info__status-completed" style={{ width: foundTask.status + "%" }}>
+                            {
+                                (foundTask.status >= 50) ?
+                                    <div className="task-info__status-titleOver50"><b>{foundTask.status}%</b></div>
+                                    : null
+                            }
+                        </div>
+                        {
+                            (foundTask.status < 50) ?
+                                <div className="task-info__status-titleUnder50"><b>{foundTask.status}%</b></div>
+                                : null
+                        }
+                    </div>
                 </div>
             </div>
         </div>

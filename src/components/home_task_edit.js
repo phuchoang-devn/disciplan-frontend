@@ -1,7 +1,8 @@
 import "./home_task_edit.css"
 import { TaskContext } from "../home.js";
-import UpdateForGroup from "./update_type.js"
+import UpdateForGroupWindow from "./update_group_window.js"
 import updateTask from "../crud/update_task.js"
+import addTask from "../crud/add_task.js"
 
 import moment from 'moment';
 import { useState, useContext, useEffect, memo } from "react";
@@ -26,31 +27,31 @@ import "react-datepicker/dist/react-datepicker.css";
 
 
 const TaskEdit = (props) => {
-    const { taskEdit, tags, defColor } = props;
-    const [tasks, repetitions, , setTaskEdit, loading, setLoading, datePointer] = useContext(TaskContext);
+    const { taskEdit, tagsRepo } = props;
+    const [taskRepo, repetitionRepo, , setTaskEdit, loading, setLoading, datePointer, defColor] = useContext(TaskContext);
     const allPriority = ["low", "medium", "high", "critical"];
     const allTimeUnit = ["Minutes", "Hours", "Days", "Weeks"];
     const allMainFreqUnit = ["day", "week", "month", "year"];
 
-    const isUpdate = taskEdit.type === "update"
-    const [tName, setTName] = useState(isUpdate ? taskEdit.task.name : "");
-    const [desc, setDesc] = useState(isUpdate ? taskEdit.task.description : "");
-    const [priority, setPriority] = useState(isUpdate ? taskEdit.task.priority : "medium");
-    const [dateStart, setDateStart] = useState(isUpdate ? taskEdit.task.date_start : taskEdit.date_start);
-    const [dateEnd, setDateEnd] = useState(isUpdate ? taskEdit.task.date_end : taskEdit.date_end);
-    const [timeStart, setTimeStart] = useState(isUpdate ? taskEdit.task.time_start : taskEdit.time_start);
-    const [timeEnd, setTimeEnd] = useState(isUpdate ? taskEdit.task.time_end : taskEdit.time_end);
-    const [status, setStatus] = useState(isUpdate ? taskEdit.task.status : 0);
-    const [notification, setNotification] = useState(isUpdate ? taskEdit.task.notification : null);
+    const [tName, setTName] = useState(taskEdit.task.name);
+    const [desc, setDesc] = useState(taskEdit.task.description);
+    const [priority, setPriority] = useState(taskEdit.task.priority);
+    const [dateStart, setDateStart] = useState(taskEdit.task.date_start);
+    const [dateEnd, setDateEnd] = useState(taskEdit.task.date_end);
+    const [timeStart, setTimeStart] = useState(taskEdit.task.time_start);
+    const [timeEnd, setTimeEnd] = useState(taskEdit.task.time_end);
+    const [status, setStatus] = useState(taskEdit.task.status);
+    const [notification, setNotification] = useState(taskEdit.task.notification);
     const [notifiTimeUnitIndex, setNotifiTimeUnitIndex] = useState(0);
-    const [isArchived, setIsArchived] = useState(isUpdate ? taskEdit.task.is_archived : false);
-    const [selectedTagIds, setSelectedTagIds] = useState(isUpdate ? taskEdit.task.tags.map(tag => tag.id) : []);
-    const [tColor, setTColor] = useState(isUpdate ? taskEdit.task.color : defColor.current[priority]);
+    const [isArchived, setIsArchived] = useState(taskEdit.task.is_archived);
+    const [selectedTagIds, setSelectedTagIds] = useState(taskEdit.task.tags.map(tag => tag.id));
+    const [tColor, setTColor] = useState(taskEdit.task.color);
 
-    const [hasRepe, setHasRepe] = useState(isUpdate && (taskEdit.task.repetition_group !== null));
-    const [repeEnd, setRepeEnd] = useState(hasRepe ? taskEdit.repe.repetition_end : taskEdit.date_start);
-    const [freq, setFreq] = useState(hasRepe ? taskEdit.repe.frequency : 1);
-    const [freqUnit, setFreqUnit] = useState(hasRepe ? taskEdit.repe.frequency_unit : "day");
+    const [hasRepe, setHasRepe] = useState(!!taskEdit.task.repetition_group);
+    const [repeEnd, setRepeEnd] = useState(!!taskEdit.task.repetition_group ? taskEdit.repe.repetition_end : taskEdit.task.date_start);
+    const [freq, setFreq] = useState(!!taskEdit.task.repetition_group ? taskEdit.repe.frequency : 1);
+    const [freqUnit, setFreqUnit] = useState(!!taskEdit.task.repetition_group ? taskEdit.repe.frequency_unit : "day");
+
     const [mainFreqUnit, setMainFreqUnit] = useState(allMainFreqUnit.includes(freqUnit) ? freqUnit : allMainFreqUnit[2]);
     const [subFreqUnit, setSubFreqUnit] = useState();
 
@@ -65,16 +66,16 @@ const TaskEdit = (props) => {
     const getSubFreqValue = (freqU, date) => {
         date = moment(date, "YYYY-MM-DD");
         if (freqU === "order_of_week") {
-            var weekday = date.format("dddd");
-            var order = parseInt((date.date() - 1) / 7 + 1);
+            let weekday = date.format("dddd");
+            let order = parseInt((date.date() - 1) / 7 + 1);
             if (order === 5) return undefined
             return `Monthly on ${order}. ${weekday}`
         }
         if (freqU === "last_week_month") {
             var numberDatesInMonth = date.daysInMonth();
-            var order = parseInt((date.date() - 1) / 7 + 1);
+            let order = parseInt((date.date() - 1) / 7 + 1);
             if ((order <= 3) || (date.date() + 7 <= numberDatesInMonth)) return undefined
-            var weekday = date.format("dddd");
+            let weekday = date.format("dddd");
             return `Monthly on last ${weekday}`
         }
         if (freqU === "month") {
@@ -119,15 +120,16 @@ const TaskEdit = (props) => {
             || old_tags.filter(id => !selectedTagIds.includes(id)).length !== 0
             || selectedTagIds.filter(id => !old_tags.includes(id)).length !== 0) changeOnInfo = true
 
-        if (changeOnInfo && !!taskEdit.task.repetition_group && !updateType) {
+        if ((taskEdit.type === "update") && changeOnInfo && !!taskEdit.task.repetition_group && !updateType) {
             setUpdateTypeWindow(true);
             return
         }
 
-        if (!!taskEdit.task.repetition_group !== hasRepe
-            || taskEdit.repe.repetition_end !== repeEnd
-            || taskEdit.repe.frequency !== freq
-            || taskEdit.repe.frequency_unit !== freqUnit) changeOnRepe = true
+        if (!!taskEdit.task.repetition_group !== hasRepe) changeOnRepe = true;
+        else if (!!taskEdit.task.repetition_group
+            && (taskEdit.repe.repetition_end !== repeEnd
+                || taskEdit.repe.frequency !== freq
+                || taskEdit.repe.frequency_unit !== freqUnit)) changeOnRepe = true;
 
         if (!changeOnInfo && !changeOnRepe) setTaskEdit(undefined)
         else {
@@ -160,23 +162,25 @@ const TaskEdit = (props) => {
                 info: info,
                 repetition: repetition
             }
-            updateTask(taskEdit.task, data, updateType, tasks, repetitions, loading, setLoading, datePointer);
+
+            if (taskEdit.type === "update") updateTask(taskEdit.task, data, updateType, taskRepo, repetitionRepo, loading, setLoading, datePointer);
+            else addTask(data, taskRepo, repetitionRepo, loading, setLoading, datePointer);
+            setTaskEdit(undefined);
         }
     }
 
     return (
-        <div className="task-edit-container" onClick={() => setTaskEdit(undefined)} style={{ background: "radial-gradient(#000000BF, " + tColor + "BF)" }}>
+        <div className="task-edit-container" onMouseDown={() => setTaskEdit(undefined)} style={{ background: "radial-gradient(#000000BF, " + tColor + "BF)" }}>
             {
                 updateTypeWindow ?
-                    <UpdateForGroup
+                    <UpdateForGroupWindow
                         setUpdateTypeWindow={setUpdateTypeWindow}
                         updateType={updateType}
                         setUpdateType={setUpdateType}
-                        handleSubmit={handleSubmit} 
-                        setTaskEdit={setTaskEdit} />
+                        handleSubmit={handleSubmit} />
                     : null
             }
-            <div className="task-edit" onClick={e => e.stopPropagation()}>
+            <div className="task-edit" onMouseDown={e => e.stopPropagation()}>
                 <div className="task-edit__header">
                     <div className="task-edit__meta">
                         <div className="task-edit__start">
@@ -195,14 +199,14 @@ const TaskEdit = (props) => {
                                 className="task-edit__datepicker-input"
                                 selected={new Date(dateStart)}
                                 dateFormat="MMMM d, yyyy"
-                                onChange={e => setDateStart(moment(e).format("YYYY-MM-DD"))}
+                                onChange={value => setDateStart(moment(value).format("YYYY-MM-DD"))}
                             />
                             <h4 className="task-edit__datepicker-title" > to </h4>
                             <DatePicker
                                 className="task-edit__datepicker-input"
                                 selected={new Date(dateEnd)}
                                 dateFormat="MMMM d, yyyy"
-                                onChange={e => setDateEnd(moment(e).format("YYYY-MM-DD"))}
+                                onChange={value => setDateEnd(moment(value).format("YYYY-MM-DD"))}
                             />
                         </div>
                         <div className="task-edit__timepicker">
@@ -226,7 +230,7 @@ const TaskEdit = (props) => {
                                 className="task-edit__desc"
                                 placeholder="Description"
                                 defaultValue={desc}
-                                onChange={desc => setDesc(desc)}
+                                onChange={e => setDesc(e.target.value)}
                             ></textarea >
                         </p>
 
@@ -365,7 +369,7 @@ const TaskEdit = (props) => {
                                                 </div>
                                             </div>
                                             {
-                                                (mainFreqUnit == allMainFreqUnit[2]) ?
+                                                (mainFreqUnit === allMainFreqUnit[2]) ?
                                                     <div className="task-edit__repe-sub-dropdown">
                                                         <input type="button" className='task-edit__repe-sub-freq' value={subFreqUnit} />
                                                         <div className="task-edit__repe-sub-dropdown-content">
@@ -408,7 +412,7 @@ const TaskEdit = (props) => {
                         <div className="task-edit__tag-container">
                             {
                                 selectedTagIds.map(id => {
-                                    let tag = tags.filter(tag => tag.id === id)[0];
+                                    let tag = tagsRepo.filter(tag => tag.id === id)[0];
                                     return (
                                         tag ?
                                             <div key={id}
@@ -427,16 +431,16 @@ const TaskEdit = (props) => {
                             }
                             <div className='task-edit__tag-dropdown'>
                                 {
-                                    (tags.length > selectedTagIds.length) ?
+                                    (tagsRepo.length > selectedTagIds.length) ?
                                         <>
                                             <input type="button" className='task-edit__tag-btn' value="Add Tag" />
                                             <div className="task-edit__tag-dropdown-content">
                                                 {
-                                                    tags.filter(tag => !selectedTagIds.includes(tag.id)).map(
+                                                    tagsRepo.filter(tag => !selectedTagIds.includes(tag.id)).map(
                                                         tag => (
                                                             <div
                                                                 key={tag.id}
-                                                                onClick={e => setSelectedTagIds(added => [...added, tag.id])}
+                                                                onClick={() => setSelectedTagIds(added => [...added, tag.id])}
                                                                 style={{ backgroundColor: tag.color }}
                                                             ><b>#{tag.name}</b></div>)
                                                     )
@@ -463,7 +467,7 @@ const TaskEdit = (props) => {
                             </div>
                             <button
                                 className="task-edit__status-thumb"
-                                onMouseDown={e => {
+                                onMouseDown={() => {
                                     let isMouseDown = true;
                                     const statusbar = document.getElementById("task-edit-status-bar");
 
@@ -477,6 +481,9 @@ const TaskEdit = (props) => {
 
                                     function handleMouseUp() {
                                         isMouseDown = false;
+
+                                        document.removeEventListener('mousemove', handleMouseMove);
+                                        document.removeEventListener('mouseup', handleMouseUp);
                                     }
 
                                     document.addEventListener('mousemove', handleMouseMove);

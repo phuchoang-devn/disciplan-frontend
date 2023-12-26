@@ -35,7 +35,7 @@
 
 .task-info__name {
     font-size: 35px;
-    font-family: arvo-bold;
+    font-weight: bold;
 }
 
 .task-info__desc {
@@ -51,7 +51,7 @@
     flex-direction: column;
     justify-content: space-around;
 
-    height: 200px;
+    height: 10em;
 }
 
 .task-info__option > * {
@@ -71,16 +71,32 @@
     width: fit-content;
 }
 
-.task-info__status {
+.task-info__status-bar {
     height: 30px;
-    padding-right: 5px;
     border: 2px solid black;
+    background-color: var(--main-50-opacity);
     border-radius: 5px;
-    text-align: right;
 
     display: flex;
     align-items: center;
-    justify-content: end;
+}
+
+.task-info__status-completed {
+    background-color: var(--secondary-color);
+    align-self: stretch;
+
+    display: flex;
+    align-items: center;
+}
+
+.task-info__status-titleOver50 {
+    margin-left: 10px;
+    color: white;
+}
+
+.task-info__status-titleUnder50 {
+    margin-left: auto;
+    margin-right: 10px;
 }
 
 

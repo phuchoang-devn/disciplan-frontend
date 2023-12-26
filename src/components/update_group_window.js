@@ -1,10 +1,10 @@
-import "./update_type.css"
+import "./update_group_window.css"
 import { UpdateType } from '../default'
 
 import { memo } from "react";
 
-const UpdateForGroup = (props) => {
-    const { setUpdateTypeWindow, updateType, setUpdateType, handleSubmit, setTaskEdit } = props;
+const UpdateForGroupWindow = (props) => {
+    const { setUpdateTypeWindow, updateType, setUpdateType, handleSubmit } = props;
 
     const handleRadioEvent = (e) => {
         setUpdateType(e.target.value);
@@ -12,12 +12,13 @@ const UpdateForGroup = (props) => {
 
     return (
         <div className="update-type-container"
-            onClick={e => {
+            onMouseDown={e => {
                 props.setUpdateTypeWindow(false);
+                props.setUpdateType(undefined);
                 e.stopPropagation();
             }}>
             <div className="update-type-edit"
-                onClick={e => e.stopPropagation()}>
+                onMouseDown={e => e.stopPropagation()}>
                 <span className="update-type__title"><b>Apply on...</b></span>
                 <div>
                     <div className="update-type__input-container">
@@ -57,8 +58,7 @@ const UpdateForGroup = (props) => {
                         }}>Cancel</button>
                     <button
                         className="update-type__btn update-type__btn-o"
-                        onClick={() =>{
-                            setTaskEdit(undefined);
+                        onClick={() => {
                             handleSubmit();
                         }}>OK</button>
                 </div>
@@ -67,4 +67,4 @@ const UpdateForGroup = (props) => {
     )
 }
 
-export default memo(UpdateForGroup)
+export default memo(UpdateForGroupWindow)

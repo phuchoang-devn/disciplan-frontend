@@ -1,6 +1,6 @@
 import env from '../env';
 import { UpdateType } from '../default'
-import { handleData } from './json_handler'
+import { getCircularReplacer, handleUpdateData } from './json_handler'
 
 import moment from 'moment';
 
@@ -8,8 +8,8 @@ const updateTask = (
     task,
     data,
     updateType,
-    tasks,
-    repetitions,
+    taskRepo,
+    repetitionRepo,
     loading,
     setLoading,
     datePointer
@@ -32,16 +32,17 @@ const updateTask = (
         await fetch(url, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json; charset=UTF-8",
                 'Authorization': user.token
             },
             body: JSON.stringify(data.info, getCircularReplacer())
         })
             .then(r => {
                 if (r.ok) return r.json();
+                console.log(r);
                 throw new Error('Failed: UPDATE INFO');
             })
-            .then(json => handleData(json, tasks, repetitions))
+            .then(json => handleUpdateData(json, taskRepo, repetitionRepo))
             .catch(e => console.log(e.message));
     }
 
@@ -55,16 +56,17 @@ const updateTask = (
         await fetch(url, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json; charset=UTF-8",
                 'Authorization': user.token
             },
             body: JSON.stringify(data.repetition)
         })
             .then(r => {
                 if (r.ok) return r.json();
+                console.log(r);
                 throw new Error('Failed: UPDATE INFO');
             })
-            .then(json => handleData(json, tasks, repetitions))
+            .then(json => handleUpdateData(json, taskRepo, repetitionRepo))
             .catch(e => console.log(e.message));
     }
 
@@ -74,23 +76,10 @@ const updateTask = (
     var viewEnd = moment(datePointer).add(env.MAX_VIEW_RADIUS, 'days');
 
     (async (start, end) => {
-        if (data.repetition !== null) await updateOrAddRepe(start, end);
         if (data.info !== null) await updateInfo(start, end);
+        if (data.repetition !== null) await updateOrAddRepe(start, end);
     })(viewStart, viewEnd)
         .then(() => setLoading(false));
 }
-
-const getCircularReplacer = () => {
-    const seen = new WeakSet();
-    return (key, value) => {
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) {
-          return;
-        }
-        seen.add(value);
-      }
-      return value;
-    };
-  };
 
 export default updateTask;

@@ -13,9 +13,9 @@
     height: fit-content;
     max-height: 95vh;
     width: 650px;
-    background-color: rgb(225, 225, 225);
+    background-color: rgb(234, 234, 234);
     border: 2px groove rgb(78, 78, 78);
-    border-radius: 10px;
+    border-radius: 5px;
     box-sizing: border-box;
     padding: 2%;
 
@@ -59,7 +59,7 @@ textarea,
 .task-edit__priority-selected,
 .task-edit__notification-selected {
     border: 1px solid rgb(75, 75, 75);
-    background: rgb(238, 238, 238);
+    background: rgb(255, 255, 255);
     padding: 0.4375rem 0.75rem;
     outline: 1px solid #eeeef0;
     font-size: 0.875rem;
@@ -379,7 +379,7 @@ textarea,
 .task-edit__status-bar {
     flex-grow: 1;
     height: 100%;
-    background-color: var(--secondary-50-opacity);
+    background-color: var(--main-50-opacity);
     border: 2px solid rgb(61, 61, 61);
     border-radius: 5px;
 
@@ -388,7 +388,7 @@ textarea,
 }
 
 .task-edit__status-completed {
-    background-color: var(--main-color);
+    background-color: var(--secondary-color);
     height: 100%;
 
     display: flex;
@@ -416,14 +416,3 @@ textarea,
     margin-left: auto;
     margin-right: 10px;
 }
-
-.noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Old versions of Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome, Edge, Opera and Firefox */
-  }
-
